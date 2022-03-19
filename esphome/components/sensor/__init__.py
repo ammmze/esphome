@@ -4,7 +4,7 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import automation
 from esphome.components import mqtt
-from esphome.const import CONF_ABOVE, CONF_ACCURACY_DECIMALS, CONF_ALPHA, CONF_BELOW, \
+from esphome.const import CONF_ABOVE, CONF_ACCURACY_DECIMALS, CONF_ALPHA, CONF_BELOW, CONF_CLUSTERED, \
     CONF_EXPIRE_AFTER, CONF_FILTERS, CONF_FROM, CONF_ICON, CONF_ID, CONF_INTERNAL, \
     CONF_ON_RAW_VALUE, CONF_ON_VALUE, CONF_ON_VALUE_RANGE, CONF_SEND_EVERY, CONF_SEND_FIRST_AT, \
     CONF_TO, CONF_TRIGGER_ID, CONF_UNIT_OF_MEASUREMENT, CONF_WINDOW_SIZE, CONF_NAME, CONF_MQTT_ID, \
@@ -289,6 +289,9 @@ def setup_sensor_core_(var, config):
                 cg.add(mqtt_.disable_expire_after())
             else:
                 cg.add(mqtt_.set_expire_after(config[CONF_EXPIRE_AFTER]))
+
+    if CONF_CLUSTERED in config:
+        cg.add(var.set_clustered_sensor(config[CONF_CLUSTERED]))
 
 
 @coroutine

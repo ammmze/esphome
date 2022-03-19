@@ -128,6 +128,9 @@ class Component {
 
   bool has_overridden_loop() const;
 
+  bool is_clustered();
+  void set_clustered(bool clustered);
+
  protected:
   virtual void call_loop();
   virtual void call_setup();
@@ -199,6 +202,7 @@ class Component {
 
   uint32_t component_state_{0x0000};  ///< State of this component.
   float setup_priority_override_{NAN};
+  bool clustered_{false};
 };
 
 /** This class simplifies creating components that periodically check a state.

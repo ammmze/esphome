@@ -3,6 +3,7 @@
 #include "esphome/core/application.h"
 #include "esphome/core/helpers.h"
 #include "esphome/core/version.h"
+#include "esphome/core/util.h"
 
 namespace esphome {
 namespace mqtt {
@@ -13,12 +14,19 @@ void MQTTComponent::set_retain(bool retain) { this->retain_ = retain; }
 
 std::string MQTTComponent::get_discovery_topic_(const MQTTDiscoveryInfo &discovery_info) const {
   std::string sanitized_name = sanitize_string_whitelist(App.get_name(), HOSTNAME_CHARACTER_WHITELIST);
+  if (this->clustered_) {
+    sanitized_name = sanitize_string_whitelist(cluster_get_name(), HOSTNAME_CHARACTER_WHITELIST);
+  }
   return discovery_info.prefix + "/" + this->component_type() + "/" + sanitized_name + "/" +
          this->get_default_object_id_() + "/config";
 }
 
 std::string MQTTComponent::get_default_topic_for_(const std::string &suffix) const {
-  return global_mqtt_client->get_topic_prefix() + "/" + this->component_type() + "/" + this->get_default_object_id_() +
+  std::string prefix = global_mqtt_client->get_topic_prefix();
+  if (this->clustered_) {
+    prefix = sanitize_string_whitelist(cluster_get_name(), HOSTNAME_CHARACTER_WHITELIST);
+  }
+  return prefix + "/" + this->component_type() + "/" + this->get_default_object_id_() +
          "/" + suffix;
 }
 
@@ -99,13 +107,18 @@ bool MQTTComponent::send_discovery_() {
         }
 
         JsonObject &device_info = root.createNestedObject("device");
-        device_info["identifiers"] = get_mac_address();
-        device_info["name"] = node_name;
-        device_info["sw_version"] = "esphome v" ESPHOME_VERSION " " + App.get_compilation_time();
+        if (is_clustered()) {
+          device_info["identifiers"] = sanitize_string_whitelist(cluster_get_name(), HOSTNAME_CHARACTER_WHITELIST);
+          device_info["name"] = cluster_get_name() + " cluster";
+        } else {
+          device_info["identifiers"] = get_mac_address();
+          device_info["name"] = node_name;
+          device_info["sw_version"] = "esphome v" ESPHOME_VERSION " " + App.get_compilation_time();
 #ifdef ARDUINO_BOARD
-        device_info["model"] = ARDUINO_BOARD;
+          device_info["model"] = ARDUINO_BOARD;
 #endif
-        device_info["manufacturer"] = "espressif";
+          device_info["manufacturer"] = "espressif";
+        }
       },
       0, discovery_info.retain);
 }

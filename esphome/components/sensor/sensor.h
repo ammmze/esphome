@@ -154,6 +154,12 @@ class Sensor : public Nameable {
    */
   void set_force_update(bool force_update) { force_update_ = force_update; }
 
+  /// Final formatting before publishing
+  virtual std::string format_for_publish(std::string value);
+
+  bool is_clustered_sensor();
+  void set_clustered_sensor(bool clustered);
+
  protected:
   /** Override this to set the Home Assistant unit of measurement for this sensor.
    *
@@ -187,6 +193,7 @@ class Sensor : public Nameable {
   Filter *filter_list_{nullptr};  ///< Store all active filters.
   bool has_state_{false};
   bool force_update_{false};
+  bool clustered_{false};
 };
 
 class PollingSensorComponent : public PollingComponent, public Sensor {

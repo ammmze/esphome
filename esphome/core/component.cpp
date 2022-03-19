@@ -153,6 +153,9 @@ bool Component::has_overridden_loop() const {
   return loop_overridden || call_loop_overridden;
 }
 
+bool Component::is_clustered() { return this->clustered_; }
+void Component::set_clustered(bool clustered) { this->clustered_ = clustered; }
+
 PollingComponent::PollingComponent(uint32_t update_interval) : Component(), update_interval_(update_interval) {}
 
 void PollingComponent::call_setup() {

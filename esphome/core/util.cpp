@@ -16,6 +16,10 @@
 #include "esphome/components/ethernet/ethernet_component.h"
 #endif
 
+#ifdef USE_CLUSTER
+#include "esphome/components/cluster/cluster.h"
+#endif
+
 #ifdef ARDUINO_ARCH_ESP32
 #include <ESPmDNS.h>
 #endif
@@ -89,6 +93,14 @@ void network_setup_mdns(IPAddress address, int interface) {
       return wifi::global_wifi_component->get_use_address();
 #endif
     return "";
+  }
+
+  std::string cluster_get_name() {
+#ifdef USE_CLUSTER
+    if (cluster::global_cluster_component != nullptr)
+      return cluster::global_cluster_component->get_cluster_name();
+#endif
+    return "esphome";
   }
 
 }  // namespace esphome

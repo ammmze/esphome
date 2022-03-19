@@ -11,8 +11,8 @@ from string import ascii_letters, digits
 import voluptuous as vol
 
 from esphome import core
-from esphome.const import CONF_AVAILABILITY, CONF_COMMAND_TOPIC, CONF_DISCOVERY, CONF_ID, \
-    CONF_INTERNAL, CONF_NAME, CONF_PAYLOAD_AVAILABLE, CONF_PAYLOAD_NOT_AVAILABLE, \
+from esphome.const import CONF_AVAILABILITY, CONF_COMMAND_TOPIC, CONF_CLUSTERED, CONF_DISCOVERY, \
+    CONF_ID, CONF_INTERNAL, CONF_NAME, CONF_PAYLOAD_AVAILABLE, CONF_PAYLOAD_NOT_AVAILABLE, \
     CONF_RETAIN, CONF_SETUP_PRIORITY, CONF_STATE_TOPIC, CONF_TOPIC, \
     CONF_HOUR, CONF_MINUTE, CONF_SECOND, CONF_VALUE, CONF_UPDATE_INTERVAL, CONF_TYPE_ID, CONF_TYPE
 from esphome.core import CORE, HexInt, IPAddress, Lambda, TimePeriod, TimePeriodMicroseconds, \
@@ -1254,6 +1254,7 @@ MQTT_COMPONENT_SCHEMA = Schema({
     Optional(CONF_AVAILABILITY): All(requires_component('mqtt'),
                                      Any(None, MQTT_COMPONENT_AVAILABILITY_SCHEMA)),
     Optional(CONF_INTERNAL): boolean,
+    Optional(CONF_CLUSTERED): boolean,
 })
 MQTT_COMPONENT_SCHEMA.add_extra(_nameable_validator)
 

@@ -6,7 +6,7 @@ from esphome import automation
 from esphome.automation import Condition
 from esphome.components import logger
 from esphome.const import CONF_AVAILABILITY, CONF_BIRTH_MESSAGE, CONF_BROKER, CONF_CLIENT_ID, \
-    CONF_COMMAND_TOPIC, CONF_DISCOVERY, CONF_DISCOVERY_PREFIX, CONF_DISCOVERY_RETAIN, \
+    CONF_CLUSTERED, CONF_COMMAND_TOPIC, CONF_DISCOVERY, CONF_DISCOVERY_PREFIX, CONF_DISCOVERY_RETAIN, \
     CONF_ID, CONF_KEEPALIVE, CONF_LEVEL, CONF_LOG_TOPIC, CONF_ON_JSON_MESSAGE, CONF_ON_MESSAGE, \
     CONF_PASSWORD, CONF_PAYLOAD, CONF_PAYLOAD_AVAILABLE, CONF_PAYLOAD_NOT_AVAILABLE, CONF_PORT, \
     CONF_QOS, CONF_REBOOT_TIMEOUT, CONF_RETAIN, CONF_SHUTDOWN_MESSAGE, CONF_SSL_FINGERPRINTS, \
@@ -306,6 +306,8 @@ def register_mqtt_component(var, config):
             cg.add(var.set_availability(availability[CONF_TOPIC],
                                         availability[CONF_PAYLOAD_AVAILABLE],
                                         availability[CONF_PAYLOAD_NOT_AVAILABLE]))
+    if CONF_CLUSTERED in config:
+        cg.add(var.set_clustered(config[CONF_CLUSTERED]))
 
 
 @automation.register_condition('mqtt.connected', MQTTConnectedCondition, cv.Schema({

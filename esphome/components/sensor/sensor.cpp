@@ -112,5 +112,10 @@ PollingSensorComponent::PollingSensorComponent(const std::string &name, uint32_t
 
 uint32_t PollingSensorComponent::update_interval() { return this->get_update_interval(); }
 
+std::string Sensor::format_for_publish(std::string value) { return value; }
+
+bool Sensor::is_clustered_sensor() { return this->clustered_; }
+void Sensor::set_clustered_sensor(bool clustered) { this->clustered_ = clustered; }
+
 }  // namespace sensor
 }  // namespace esphome
