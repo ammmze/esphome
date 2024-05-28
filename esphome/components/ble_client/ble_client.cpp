@@ -304,16 +304,21 @@ BLECharacteristic *BLEClient::get_characteristic(uint16_t service, uint16_t chr)
 }
 
 BLEDescriptor *BLEClient::get_config_descriptor(uint16_t handle) {
+  ESP_LOGV(TAG, "looking for config descriptor for handle 0x%x", handle);
   for (auto &svc : this->services_) {
     for (auto &chr : svc->characteristics) {
       if (chr->handle == handle) {
+        ESP_LOGV(TAG, "found matching handle 0x%x", chr->handle);
         for (auto &desc : chr->descriptors) {
+          ESP_LOGV(TAG, "checking descriptor %s", desc->uuid.to_string().c_str());
           if (desc->uuid == espbt::ESPBTUUID::from_uint16(0x2902))
+            ESP_LOGV(TAG, "found matching descriptor %s", desc->uuid.to_string().c_str());
             return desc;
         }
       }
     }
   }
+  ESP_LOGV(TAG, "no config descriptor found for handle 0x%x", handle);
   return nullptr;
 }
 
